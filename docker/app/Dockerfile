@@ -1,6 +1,6 @@
 FROM php:7.4-fpm
 
-ARG TIME_ZONE
+ARG TZ
 ARG UID
 ARG GID
 
@@ -77,7 +77,7 @@ RUN chmod +x /entrypoint.sh
 RUN curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/bash/yii -o /etc/bash_completion.d/yii
 
 # Set up time zone
-RUN ln -snf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime && echo $TIME_ZONE > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime && echo $TZ > /etc/timezone
 
 VOLUME /var/www/.composer
 WORKDIR /app

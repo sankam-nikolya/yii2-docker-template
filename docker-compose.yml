@@ -14,7 +14,7 @@ services:
         condition: service_healthy
     environment:
       PHP_EXTRA_CONFIGURE_ARGS: "--enable-fpm --with-fpm-user=${UID} --with-fpm-group=${GID}"
-      TIME_ZONE: ${TIME_ZONE}
+      TZ: ${TIME_ZONE}
       UID: ${UID}
       GID: ${GID}
     networks:
@@ -60,6 +60,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+      TZ: ${TIME_ZONE}
     healthcheck:
       test: "/usr/bin/mysql --user=${MYSQL_ROOT_USER} --password=${MYSQL_ROOT_PASSWORD} --execute \"SHOW DATABASES;\""
       interval: 1s
