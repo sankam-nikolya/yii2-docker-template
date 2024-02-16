@@ -1,0 +1,45 @@
+[mysqld_safe]
+skip_log_error
+syslog
+
+[client]
+max_allowed_packet=500M
+default-character-set=utf8
+
+[mysql]
+default-character-set=utf8
+
+[mysqld]
+init-connect='SET NAMES utf8'
+skip-character-set-client-handshake
+default_authentication_plugin=mysql_native_password
+
+
+pid-file                = /var/lib/mysql/mysqld.pid
+basedir                 = /usr
+datadir                 = /var/lib/mysql
+tmpdir                  = /tmp
+lc-messages-dir         = /usr/share/mysql
+lc-messages             = en_US
+skip-external-locking
+expire_logs_days        = 10
+character-set-server  = utf8mb4
+collation-server      = utf8mb4_general_ci
+
+#### TIMEOUT
+connect_timeout = 60
+wait_timeout = 28800
+max_connections = 350
+max_allowed_packet = 256M
+max_connect_errors = 100
+net_read_timeout = 180
+net_write_timeout = 180
+
+
+innodb_buffer_pool_size = 2G
+innodb_buffer_pool_instances = 2
+innodb_flush_method = O_DIRECT
+innodb_log_buffer_size = 16M
+innodb_log_file_size=128M
+
+explicit_defaults_for_timestamp = 1

@@ -1,0 +1,88 @@
+version: '3.0'
+
+services:
+  app:
+    user: "${UID}:${GID}"
+    container_name: ${APP_NAME}-app
+    build: docker/app
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+      - ./docker/app/composer-data:/var/www/.composer
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PHP_EXTRA_CONFIGURE_ARGS: "--enable-fpm --with-fpm-user=${UID} --with-fpm-group=${GID}"
+      TIME_ZONE: ${TIME_ZONE}
+      UID: ${UID}
+      GID: ${GID}
+    networks:
+      - app-network
+
+  nginx:
+    container_name: ${APP_NAME}-nginx
+    image: nginx:1.19-alpine
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./:/app
+      - ./docker/nginx/vhost.conf.template:/etc/nginx/conf.d/vhost.conf.template
+    command: /bin/sh -c "envsubst '$${BASE_HOST}' < /etc/nginx/conf.d/vhost.conf.template > /etc/nginx/conf.d/vhost.conf && nginx -g 'daemon off;'"
+    environment:
+      BASE_HOST: ${APP_NAME}
+    depends_on:
+      - app
+    networks:
+      - app-network
+
+  mailcatcher:
+    container_name: ${APP_NAME}-mailcatcher
+    image: schickling/mailcatcher:latest
+    restart: unless-stopped
+    ports:
+      - 1080:1080
+    networks:
+      - app-network
+
+  mysql:
+    user: "${UID}:${GID}"
+    container_name: ${APP_NAME}-mysql
+    image: mysql:5.7
+    restart: unless-stopped
+    volumes:
+      - ./docker/mysql/conf.d/config.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+      - ./docker/mysql/data:/var/lib/mysql:rw
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:rw
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+    healthcheck:
+      test: "/usr/bin/mysql --user=${MYSQL_ROOT_USER} --password=${MYSQL_ROOT_PASSWORD} --execute \"SHOW DATABASES;\""
+      interval: 1s
+      timeout: 10s
+      retries: 10
+    networks:
+      - app-network
+
+  phpmyadmin:
+    container_name: ${APP_NAME}-phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
+    restart: unless-stopped
+    environment:
+      - PMA_HOST=mysql
+      - PMA_ARBITRARY=1
+      - PMA_USER=${MYSQL_ROOT_USER}
+      - PMA_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - UPLOAD_LIMIT=512M
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    name: ${APP_NAME}-network
