@@ -32,6 +32,8 @@ server {
     index index.php index.html;
     server_name admin.${BASE_HOST}.localhost;
     charset utf-8;
+    access_log  /app/backend/runtime/access.log main;
+    error_log   /app/backend/runtime/error.log debug;
     location / {
         try_files $uri $uri/ /index.php?$args;
     }
