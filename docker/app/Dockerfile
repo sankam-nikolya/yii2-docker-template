@@ -66,6 +66,10 @@ COPY ./install-composer.sh /
 COPY ./entrypoint.sh /
 RUN chmod +x /install-composer.sh /entrypoint.sh
 
+# Install composer
+RUN sh /install-composer.sh \
+    && rm /install-composer.sh
+
 # Install Yii framework bash autocompletion
 RUN curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/bash/yii -o /etc/bash_completion.d/yii
 
@@ -75,6 +79,11 @@ RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezo
 # Set user and group IDs
 RUN groupadd -g ${GID} appuser && \
     useradd -u ${UID} -g ${GID} -s /bin/bash -m appuser
+
+# Create xdebug log file and set permissions
+RUN touch /tmp/xdebug.log && \
+    chown ${UID}:${GID} /tmp/xdebug.log && \
+    chmod 664 /tmp/xdebug.log
 
 # Switch to the newly created user
 USER appuser
