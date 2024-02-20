@@ -30,7 +30,6 @@ collation-server      = utf8mb4_general_ci
 connect_timeout = 60
 wait_timeout = 28800
 max_connections = 350
-max_allowed_packet = 256M
 max_connect_errors = 100
 net_read_timeout = 180
 net_write_timeout = 180
