@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./:/app
-      - ./docker/app/composer-data:/var/www/.composer
+      - ./docker/app/composer-data:/home/appuser/.composer
     depends_on:
       mysql:
         condition: service_healthy
