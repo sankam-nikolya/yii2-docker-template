@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./:/app
-      - ./docker/app/user-data:/home/appuser/
+      - ./docker/app/user-data:/home/appuser
     depends_on:
       mysql:
         condition: service_healthy
