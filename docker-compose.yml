@@ -87,4 +87,5 @@ services:
 
 networks:
   app-network:
+    external: false
     name: ${APP_NAME}-network
