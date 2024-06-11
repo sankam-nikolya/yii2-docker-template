@@ -1,5 +1,8 @@
 #!/bin/bash
 
+/usr/sbin/service cron start
+/usr/sbin/service cron status
+
 # Check if the /app/vendor directory exists
 if [ ! -d "/app/vendor" ]; then
     echo "Running composer install..."
