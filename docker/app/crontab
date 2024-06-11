@@ -22,5 +22,5 @@
 #
 # m h  dom mon dow   command
 
-#* * * * *  cd /app; php yii help/list >> /app/console/runtime/logs/crontab.log 2>&1
+#* * * * *  cd /app; /usr/local/bin/php yii help/list >> /app/console/runtime/logs/crontab.log 2>&1
 
